@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %} Home{% endblock title %}
+{% block body %}
+
+    {% if msg  %}
+        <div class="alert alert-dark alert-dismissible fade show" role="alert">
+            <p class="text-center"><strong>{{msg}}</strong> </p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% else %}
+        <div> </div>
+    {% endif %}
+
+
+
+
+<div class="container my-3 .bg-light">
+    <h2>Park A Car</h2>
+    <form action="/" method="POST">
+        <div class="mb-3">
+            <label for="car_no" class="form-label">Car Number</label>
+            <input type="text" class="form-control" name="car_no" id="car_no" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+            <label for="color" class="form-label">Car Color</label>
+            <input type="text" class="form-control" name="color" id="color">
+        </div>
+
+        <button type="submit" class="btn btn-dark">Add to park </button>
+    </form>
+</div>
+<div class="container my-3">
+    <h2>All Parked Cars </h2>
+
+    {% if AllCars|length == 0 %}
+
+    <div class="alert alert-dark" role="alert">
+        No car found. Add to park car now!
+    </div>
+    {% else %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Parked slot</th>
+                <th scope="col">Car Number</th>
+                <th scope="col">Car Color</th>
+                <th scope="col">Time</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for cars in AllCars %}
+            <tr>
+                <th scope="row">{{cars["slot"]}}</th>
+                <td>{{cars["car_no"]}}</td>
+                <td>{{cars["color"]}}</td>
+                <td>{{cars["time"]}}</td>
+                <td>
+                        <a href="/delete/{{cars['slot']}}" type="button"
+                            class="btn btn-outline-dark btn-sm mx-1">Leave</button>
+
+                </td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+
+</div>
+<!-- Optional JavaScript; choose one of the two! -->
+
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+    crossorigin="anonymous"></script>
+
+
+
+{% endblock body %}
