@@ -1,0 +1,51 @@
+{% extends 'base.html' %} {% block title %} Home{% endblock title %} {% block
+body %} {% if msg %}
+<div class="alert alert-dark alert-dismissible fade show" role="alert">
+  <p class="text-center"><strong>{{msg}}</strong></p>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>
+{% else %}
+<div></div>
+{% endif %}
+
+<div class="container my-3">
+  <h2>Update Car</h2>
+  <form action="/update/{{allCars.sno}}" method="POST">
+    <div class="mb-3">
+      <label for="car_no" class="form-label">Car Number</label>
+      <input
+        type="text"
+        class="form-control"
+        name="car_no"
+        id="car_no"
+        value="{{allCars.car_no}}"
+        aria-describedby="emailHelp"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="color" class="form-label">Car Color</label>
+      <input
+        type="text"
+        class="form-control"
+        value="{{allCars.color}}"
+        name="color"
+        id="color"
+      />
+    </div>
+
+    <button type="submit" class="btn btn-dark">Update</button>
+  </form>
+</div>
+
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+  crossorigin="anonymous"
+></script>
+
+{% endblock body %}

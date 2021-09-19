@@ -2,7 +2,7 @@ from enum import unique
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+from Entities.ValidateCar import ValidateCar
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///parkCars.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -25,13 +25,12 @@ class AllCars(db.Model):
 def validation(car_no):
     car_no_database = AllCars.query.filter_by(car_no=car_no).first()
     if(car_no_database or len(car_no) == 0):
-        return "Enter valid car number "
+        return "Enter another car number "
     else:
         return ""
 
 
 def genrateSlot():
-    # maxCars = 5
     slotArr = []
     for cars in AllCars.query.all():
         slotArr.append(cars.slot)
@@ -43,25 +42,26 @@ def genrateSlot():
 @app.route("/", methods=["POST", "GET"])
 def create_parking():
     msg = ""
-    # maxCars = 5
-    # allCars = AllCars(car_no="KA-12-O789", color="while", slot=2)
-    # db.session.add(allCars,x)
-    # db.session.commit()
     allCars = AllCars.query.all()
     if(len(allCars) <= maxCars and genrateSlot()):
         db.create_all()
         if(request.method == "POST"):
             car_no = request.form['car_no']
             color = request.form['color']
-            if(validation(car_no.strip())):
+            if(validation(car_no.strip()) ):
                 msg = validation(car_no.strip())
+            elif(ValidateCar.input_car(car_no.strip())):
+                if(ValidateCar.colorVal(color.strip())):
+                    genSlot = genrateSlot()
+                    allCars = AllCars(car_no=ValidateCar.genrateCarNo(car_no.strip()),
+                                    color=color.strip().upper(), slot=genSlot)
+                    db.session.add(allCars)
+                    db.session.commit()
+                    msg = "Car parked, successfully at " + str(genSlot) 
+                else:
+                    msg = "Wrong Color :( "
             else:
-                genSlot = genrateSlot()
-                allCars = AllCars(car_no=car_no.strip(),
-                                  color=color.strip().upper(), slot=genSlot)
-                db.session.add(allCars)
-                db.session.commit()
-                msg = "Car parked, successfully !!  "
+                msg = "invalid input format :("
     else:
         msg = "No Parking slot available :( "
 
@@ -109,6 +109,26 @@ def search_color():
     else:
         msg = "NO car found !! "
     return render_template("search.html", colorCars=colorCars, msg=msg)
+
+@app.route('/update/<int:slot>', methods=['GET', 'POST'])
+def update(slot):
+    msg = ""
+    if request.method=='POST':
+        car_no = request.form['car_no']
+        color = request.form['color']
+        if(not validation(car_no.strip()) and ValidateCar.input_car(car_no.strip()) and ValidateCar.colorVal(color.strip())):
+            allCars = AllCars.query.filter_by(slot=slot).first()
+            allCars.car_no = ValidateCar.genrateCarNo(car_no.strip())
+            allCars.color = color.strip().upper()
+            db.session.add(allCars)
+            db.session.commit()
+            return redirect("/")
+        else:
+            msg = "Something Wrong :( "
+        
+    allCars = AllCars.query.filter_by(slot=slot).first()
+    return render_template('update.html', allCars=allCars, msg = msg)
+
 
 
 if __name__ == '__main__':
