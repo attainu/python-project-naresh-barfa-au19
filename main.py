@@ -1,7 +1,7 @@
 from enum import unique
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+import datetime
 from Entities.ValidateCar import ValidateCar
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///parkCars.db"
@@ -12,11 +12,12 @@ maxCars = 5
 
 
 class AllCars(db.Model):
+    x = datetime.datetime.now()
     sno = db.Column(db.Integer, primary_key=True)
     slot = db.Column(db.Integer)
     car_no = db.Column(db.String(50), unique=True, nullable=False)
     color = db.Column(db.String(50), nullable=False)
-    time = db.Column(db.DateTime, default=datetime.utcnow)
+    time = db.Column(db.String(15), default=x.strftime("%x")+"   "+ x.strftime("%X"))
 
     def __repr__(self) -> str:
         return f"{self.slot} - {self.car_no} - {self.color}"
