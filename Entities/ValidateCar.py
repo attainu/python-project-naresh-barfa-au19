@@ -40,6 +40,7 @@ class ValidateCar:
 
 
     def genrateCarNo(car_no):
+        print("message from genratecar",car_no)
         outpt = ""
         alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         for ch in car_no:
@@ -47,6 +48,7 @@ class ValidateCar:
                 outpt += ch.upper()
             else:
                 outpt += ch
+        print("outpt",outpt)
         return outpt
 
     def colorVal(color):

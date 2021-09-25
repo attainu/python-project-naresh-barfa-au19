@@ -117,8 +117,10 @@ def update(slot):
     if request.method=='POST':
         car_no = request.form['car_no']
         color = request.form['color']
+        print("update route",car_no,color)
         if(not validation(car_no.strip()) and ValidateCar.input_car(car_no.strip()) and ValidateCar.colorVal(color.strip())):
             allCars = AllCars.query.filter_by(slot=slot).first()
+            print("------------------",allCars)
             allCars.car_no = ValidateCar.genrateCarNo(car_no.strip())
             allCars.color = color.strip().upper()
             db.session.add(allCars)
